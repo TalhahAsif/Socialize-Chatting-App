@@ -41,10 +41,8 @@ const signup = async (req, res) => {
       await newUser.save();
 
       return res.status(201).json({
-        _id: newUser._id,
-        email: newUser.email,
-        password: newUser.password,
-        profileImg: newUser.profileImg,
+        newUser,
+        messege: "Account created Successfully",
       });
     } else {
       return res.stutus(400).json({
@@ -94,7 +92,7 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.cookie("jwt", { maxAge: 0 });
+    res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({
       messege: "User Logged Out Successfully",
     });
@@ -107,4 +105,57 @@ const logout = async (req, res) => {
   }
 };
 
-export { signup, login, logout };
+const updateAcc = async (req, res) => {
+  const { profileImg, fullname, Bio } = req.body;
+  const newName = fullname;
+  const newBio = Bio;
+
+  const userID = req.user._id;
+
+  try {
+    if ((fullname && fullname.length < 2) || fullname == "") {
+      return res.status(400).json({
+        messege: "Name is too short",
+      });
+    }
+
+    if (fullname) {
+      const updatedUser = await User.findByIdAndUpdate(
+        userID,
+        { fullname: newName },
+        { new: true }
+      );
+      console.log("updatedName==>", updatedUser);
+
+      return res.status(200).json({
+        updatedUser,
+        messege: "Fullname Updated successfully",
+      });
+    }
+
+    /////updating Bio
+    if ((Bio && Bio.length < 1) || Bio == "") {
+      return res.status(400).json({
+        message: "Bio is too short",
+      });
+    }
+
+    if (Bio) {
+      const updatedUser = await User.findByIdAndUpdate(
+        userID,
+        { Bio: newBio },
+        { new: true }
+      );
+      console.log("updatedName==>", updatedUser);
+
+      return res.status(200).json({
+        updatedUser,
+        message: "Bio Updated successfully",
+      });
+    }
+  } catch (error) {}
+};
+
+const updatePassword = () => {};
+
+export { signup, login, logout, updateAcc };
