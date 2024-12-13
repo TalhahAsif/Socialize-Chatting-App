@@ -1,6 +1,8 @@
+import Joi from "joi";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import cloudinary from "../lib/cloudnary.js";
 
 const signup = async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -106,53 +108,45 @@ const logout = async (req, res) => {
 };
 
 const updateAcc = async (req, res) => {
-  const { profileImg, fullname, Bio } = req.body;
-  const newName = fullname;
-  const newBio = Bio;
+  const updateSchema = Joi.object({
+    fullname: Joi.string().min(3).max(30),
+    Bio: Joi.string().min(3).max(30),
+    profileImg: Joi.string(),
+  });
 
   const userID = req.user._id;
 
   try {
-    if ((fullname && fullname.length < 2) || fullname == "") {
+    const updates = {};
+    const { error, value } = updateSchema.validate(req.body);
+
+    if (error) {
       return res.status(400).json({
-        messege: "Name is too short",
+        message: error.message,
       });
     }
 
-    if (fullname) {
-      const updatedUser = await User.findByIdAndUpdate(
-        userID,
-        { fullname: newName },
-        { new: true }
-      );
-      console.log("updatedName==>", updatedUser);
-
-      return res.status(200).json({
-        updatedUser,
-        messege: "Fullname Updated successfully",
-      });
+    if (value.fullname) updates.fullname = value.fullname;
+    if (value.Bio) updates.Bio = value.Bio;
+    if (value.profileImg) {
+      const Image = await cloudinary.uploader.upload(value.profileImg);
+      updates.profileImg = Image.secure_url;
     }
 
-    /////updating Bio
-    if ((Bio && Bio.length < 1) || Bio == "") {
+    if (Object.keys(updates).length === 0) {
       return res.status(400).json({
-        message: "Bio is too short",
+        message: "No update Provided",
       });
     }
 
-    if (Bio) {
-      const updatedUser = await User.findByIdAndUpdate(
-        userID,
-        { Bio: newBio },
-        { new: true }
-      );
-      console.log("updatedName==>", updatedUser);
+    const updatedUser = await User.findByIdAndUpdate(userID, updates, {
+      new: true,
+    });
 
-      return res.status(200).json({
-        updatedUser,
-        message: "Bio Updated successfully",
-      });
-    }
+    return res.status(200).json({
+      updatedUser,
+      message: "Account Updated Successfully",
+    });
   } catch (error) {}
 };
 

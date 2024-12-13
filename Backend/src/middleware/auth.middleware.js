@@ -28,6 +28,7 @@ export const protectedRoute = async (req, res, next) => {
     }
 
     req.user = user;
+
     next();
   } catch (error) {
     console.log("error in protected Routes==>", error.message);
