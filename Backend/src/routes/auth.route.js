@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  checkAuth,
   login,
   logout,
   signup,
@@ -12,7 +13,7 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
-
+router.get("/checkAuth", protectedRoute, checkAuth);
 router.put("/updateAccount", protectedRoute, updateAcc);
 
 export default router;

@@ -94,7 +94,7 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.cookie("jwt", "", { maxAge: 0 });
+    res.cookie("jsonwebtoken", "", { maxAge: 0 });
     res.status(200).json({
       messege: "User Logged Out Successfully",
     });
@@ -150,6 +150,17 @@ const updateAcc = async (req, res) => {
   } catch (error) {}
 };
 
+const checkAuth = (req, res) => { 
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("error in check Auth", error.message);
+    res.status(500).json({
+      message: "Internal server Error",
+    });
+  }
+};
+
 const updatePassword = () => {};
 
-export { signup, login, logout, updateAcc };
+export { signup, login, logout, updateAcc, checkAuth };

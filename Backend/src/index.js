@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
+import messegesRoutes from "./routes/messege.routes.js";
 import { connectDB } from "./lib/connecBD.js";
 import cookieParser from "cookie-parser";
 
@@ -13,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/auth", authRoutes);
-
+app.use("/messeges", messegesRoutes);
 
 app.listen(PORT, () => {
   connectDB();
