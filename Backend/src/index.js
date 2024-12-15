@@ -13,8 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/auth", authRoutes);
-app.use("/messeges", messegesRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/messeges", messegesRoutes);
 
 app.listen(PORT, () => {
   connectDB();
