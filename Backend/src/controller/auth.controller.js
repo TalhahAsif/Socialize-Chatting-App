@@ -5,10 +5,10 @@ import bcrypt from "bcrypt";
 import cloudinary from "../lib/cloudnary.js";
 
 const signup = async (req, res) => {
-  const { fullname, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
-    if (!fullname || !email || !password) {
+    if (!username || !email || !password) {
       return res.status(500).json({
         error: true,
         messege: "please fill all fields",
@@ -33,7 +33,7 @@ const signup = async (req, res) => {
     const hashpassword = await bcrypt.hash(password, saltRound);
 
     const newUser = new User({
-      fullname,
+      username,
       email,
       password: hashpassword,
     });
@@ -109,7 +109,7 @@ const logout = async (req, res) => {
 
 const updateAcc = async (req, res) => {
   const updateSchema = Joi.object({
-    fullname: Joi.string().min(3).max(30),
+    username: Joi.string().min(3).max(30),
     Bio: Joi.string().min(3).max(30),
     profileImg: Joi.string(),
   });
@@ -150,7 +150,7 @@ const updateAcc = async (req, res) => {
   } catch (error) {}
 };
 
-const checkAuth = (req, res) => { 
+const checkAuth = (req, res) => {
   try {
     res.status(200).json(req.user);
   } catch (error) {

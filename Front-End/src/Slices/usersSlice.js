@@ -1,26 +1,40 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { axiosInstance } from "../lib/axios";
+import axios from "axios";
 
 const initialState = {
-  users: [],
+  user: [],
+  checkingAuth: true,
   loading: true,
 };
+
+export default const checkAuthFunc = createAsyncThunk("auth/checkAuth", async () => {
+  try {
+    const res = axios.get("http://localhost:5050/api/auth/checkAuth");
+    return res;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
 
 const userSlice = createSlice({
   name: "Auth",
   initialState,
-  reducers: {
-    login: (state, action) => {
-      state.users = action.payload;
-      state.loading = false;
-    },
-    logout: (state, action) => {
-      state.users = nul;
-    },
-    setloading: (state, action) => {
-      state.loading = !state.loading;
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    ////checking Auth
+    builder.addCase(checkAuthFunc.pending, (state, action) => {
+      state.checkingAuth = true;
+    });
+    builder.addCase(checkAuthFunc.fulfilled, (state, action) => {
+      state.checkingAuth = false;
+      state.user = action.payload;
+    });
+    builder.addCase(checkAuthFunc.rejected, (state, action) => {
+      state.checkingAuth = false;
+      state.user = null;
+    });
   },
 });
 
-export const { login, logout } = userSlice.actions;
 export default userSlice.reducer;

@@ -7,33 +7,89 @@ import {
   User,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+
+const loginschema = z.object({
+  email: z.string().email({ message: "Enter A Valid Email" }),
+  password: z.string().min(8, {
+    message: "Password must contain atleast 8 character",
+  }),
+});
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginschema),
+  });
+
+  const submitForm = (data) => {
+    console.log(data);
+    reset();
+  };
+
   return (
     <section className="flex justify-center items-center h-screen mx-10">
-      <div className="w-screen md:w-1/2 flex flex-col gap-10 p-10 rounded-xl backdrop-blur-md bg-white/10">
+      <form
+        onSubmit={handleSubmit(submitForm)}
+        className="w-screen md:w-1/2 flex flex-col gap-10 p-10 rounded-xl backdrop-blur-md bg-black/10"
+      >
         <div className="flex justify-between items-center">
           <p className="text-5xl font-bold">Login</p>
           <div className="flex items-center justify-center gap-2">
             <p className="text-lg font-bold">Socialize</p>
-            <MessageCircleDashed size={50} />
+            <MessageCircleDashed size={50} color="#1e55ca" />
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <Input icon={<Mail />} type={"email"} placeholder={"Email"} />
-          <Input
-            icon={<RectangleEllipsis />}
-            type={"password"}
-            placeholder={"Password"}
-          />
+          <label className="input input-bordered flex items-center gap-2">
+            <Mail />
+            <input
+              type={"text"}
+              className="grow"
+              placeholder={"Email"}
+              {...register("email")}
+            />
+          </label>
+
+          {errors ? (
+            <span className="text-xs text-red-600">
+              {errors["email"]?.message}
+            </span>
+          ) : null}
+
+          <label className="input input-bordered flex items-center gap-2">
+            <RectangleEllipsis />
+            <input
+              type={"password"}
+              className="grow"
+              placeholder={"Password"}
+              {...register("password")}
+            />
+          </label>
+          {errors ? (
+            <span className="text-xs text-red-600">
+              {errors["password"]?.message}
+            </span>
+          ) : null}
         </div>
-        <p>
-          Does not have account?
-          <Link to={"/auth/register"} className="underline">
-            create
-          </Link>
-        </p>
-      </div>
+        <div className="flex justify-center lg:justify-between items-end flex-wrap gap-4">
+          <button type="submit" className="btn btn-primary w-full lg:w-1/3">
+            Register
+          </button>
+          <p className="">
+            Does not hove Account?
+            <Link to={"/auth/register"} className="underline">
+              create one
+            </Link>
+          </p>
+        </div>
+      </form>
     </section>
   );
 };
