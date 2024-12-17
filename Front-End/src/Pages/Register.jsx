@@ -26,9 +26,9 @@ const Signup = z.object({
 const Register = () => {
   const dispatch = useDispatch();
 
-  const error = useSelector((state) => state.error);
+  const loading = useSelector((state) => state.loading);
 
-  console.log("error", error);
+  console.log("loading", loading);
 
   const {
     register,
@@ -105,7 +105,15 @@ const Register = () => {
           ) : null}
         </div>
         <div className="flex justify-center lg:justify-between items-end flex-wrap gap-4">
-          <button className="btn btn-primary w-full lg:w-1/3">Register</button>
+          <button
+            disabled={loading}
+            className="btn btn-primary w-full lg:w-1/3"
+          >
+            Register{" "}
+            {loading ? (
+              <span className="loading loading-dots loading-xs"></span>
+            ) : null}
+          </button>
           <p className="">
             Already have Account?
             <Link to={"/auth/"} className="underline">

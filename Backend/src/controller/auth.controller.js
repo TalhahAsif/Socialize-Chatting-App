@@ -67,27 +67,27 @@ const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        messege: "invalid Credentials",
+        message: "invalid Credentials",
       });
     }
 
-    const isPasswordcorrect = bcrypt.compare(password, user.password);
+    const isPasswordcorrect = await bcrypt.compare(password, user.password);
 
     if (isPasswordcorrect) {
       generateToken(user._id, res);
       return res.status(200).json({
         user,
-        messege: "User login succesfully",
+        message: "User login succesfully",
       });
     } else {
       return res.status(400).json({
-        messege: "invalid Credentials",
+        message: "invalid Credentials",
       });
     }
   } catch (error) {
     console.log("error in login==>", error.messege);
     return res.status(500).json({
-      messege: "Internal server error",
+      message: "Internal server error",
     });
   }
 };
@@ -96,13 +96,13 @@ const logout = async (req, res) => {
   try {
     res.cookie("jsonwebtoken", "", { maxAge: 0 });
     res.status(200).json({
-      messege: "User Logged Out Successfully",
+      message: "User Logged Out Successfully",
     });
   } catch (error) {
     console.log("error in loggin out==>", error.message);
 
     res.status(500).json({
-      messege: "Internal server Error",
+      message: "Internal server Error",
     });
   }
 };
