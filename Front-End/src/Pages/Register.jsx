@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../Slices/usersSlice.js";
 
 const Signup = z.object({
   username: z
@@ -22,9 +24,16 @@ const Signup = z.object({
 });
 
 const Register = () => {
+  const dispatch = useDispatch();
+
+  const error = useSelector((state) => state.error);
+
+  console.log("error", error);
+
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -32,9 +41,9 @@ const Register = () => {
   });
 
   const onSubmit = (data) => {
-    
-
     console.log(data);
+    dispatch(registerUser(data));
+    reset();
   };
 
   return (

@@ -52,7 +52,7 @@ const signup = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("error in signing==>", error.messege);
+    console.log("error in signing==>", error.message);
     return res.status(500).json({
       messege: "Internal Server Error",
     });
@@ -99,7 +99,7 @@ const logout = async (req, res) => {
       messege: "User Logged Out Successfully",
     });
   } catch (error) {
-    console.log("error in loggin out==>", error.messege);
+    console.log("error in loggin out==>", error.message);
 
     res.status(500).json({
       messege: "Internal server Error",

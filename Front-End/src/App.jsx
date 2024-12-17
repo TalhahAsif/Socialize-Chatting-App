@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Loader } from "lucide-react";
 import axios from "axios";
 import { axiosInstance } from "./lib/axios.js";
+import { checkAuthFunc } from "./Slices/usersSlice.js";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -24,8 +25,16 @@ const App = () => {
   console.log("chekingAuth", checkingAuth);
 
   useEffect(() => {
-    
+    dispatch(checkAuthFunc());
   }, []);
+
+  if (checkingAuth) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader className="size-10 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <>
