@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../Slices/usersSlice";
+import { checkAuthFunc, loginUser } from "../Slices/usersSlice";
 
 const loginschema = z.object({
   email: z.string().email({ message: "Enter A Valid Email" }),
@@ -23,7 +23,7 @@ const loginschema = z.object({
 
 const Login = () => {
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.loading);
+  const loading = useSelector((state) => state.authdata.loading);
 
   console.log("loading", loading);
 
@@ -39,6 +39,7 @@ const Login = () => {
   const submitForm = (data) => {
     console.log(data);
     dispatch(loginUser(data));
+    dispatch(checkAuthFunc());
     reset();
   };
 

@@ -18,14 +18,9 @@ import { Toaster, toast } from "sonner";
 const App = () => {
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.user);
-  const checkingAuth = useSelector((state) => state.checkingAuth);
-  const loading = useSelector((state) => state.loading);
-  const error = useSelector((state) => state.error);
-
-  console.log("user", user);
-  // console.log("chekingAuth", checkingAuth);
-  console.log("error", error);
+  const user = useSelector((state) => state.authdata.user);
+  const checkingAuth = useSelector((state) => state.authdata.checkingAuth);
+  const loading = useSelector((state) => state.authdata.loading);
 
   useEffect(() => {
     dispatch(checkAuthFunc());

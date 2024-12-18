@@ -26,7 +26,7 @@ const Signup = z.object({
 const Register = () => {
   const dispatch = useDispatch();
 
-  const loading = useSelector((state) => state.loading);
+  const loading = useSelector((state) => state.authdata.loading);
 
   console.log("loading", loading);
 
