@@ -51,6 +51,17 @@ export const logout = createAsyncThunk("auth/logout", async () => {
   }
 });
 
+export const update = createAsyncThunk("auth/updateAccount", async (data) => {
+  try {
+    const res = await axiosInstance.post("/auth/updateAccount", data);
+    console.log("update==>", res.data.message);
+    toast.success(res.data.message);
+    return res.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+});
+
 const userSlice = createSlice({
   name: "Auth",
   initialState,
@@ -104,6 +115,20 @@ const userSlice = createSlice({
         state.user = null;
       })
       .addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+      });
+
+    /////update
+
+    builder
+      .addCase(update.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(update.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = state.payload;
+      })
+      .addCase(update.rejected, (state, action) => {
         state.loading = false;
       });
   },
