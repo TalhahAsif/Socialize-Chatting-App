@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import cloudinary from "../lib/cloudnary.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
+import { ObjectId } from "mongodb";
 
 export const userForSideBar = async (req, res) => {
   try {
@@ -36,13 +37,14 @@ export const getMessages = async (req, res) => {
     const myID = req.user._id;
     const usertoChat = req.params;
 
+    console.log("this is myID", myID);
+    console.log("this is receiver ID", new ObjectId(usertoChat.params));
+
     const chat = await Message.find({
-      _id: {
-        $or: [
-          { sender_id: myID, receiver_id: usertoChat },
-          { sender_id: usertoChat, receiver_id: myID },
-        ],
-      },
+      $or: [
+        { sender_id: myID, receiver_id: new ObjectId(usertoChat.params) },
+        { sender_id: new ObjectId(usertoChat.params), receiver_id: myID },
+      ],
     });
 
     if (!chat) {
@@ -74,7 +76,7 @@ export const sendChat = async (req, res) => {
 
   if (!isValidObjectId(receiver_id) || !isValidObjectId(sender_id)) {
     res.status(500).json({
-      messege: "Not a valid Object ID", 
+      messege: "Not a valid Object ID",
     });
   }
 
@@ -82,7 +84,7 @@ export const sendChat = async (req, res) => {
     let chat = { receiver_id, sender_id };
 
     if (text) {
-      chat.messege = text;
+      chat.text = text;
     }
     if (image) {
       const uploadImg = await cloudinary.uploader.upload(image);

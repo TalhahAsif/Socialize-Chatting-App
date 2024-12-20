@@ -20,7 +20,7 @@ const AvatarDropDown = () => {
                 <img src={user.profileImg} />
               </div>
             </div>
-            <p>{user.username}</p>
+            <p className="hidden md:flex">{user.username}</p>
           </summary>
           <ul className="menu dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
             <li>

@@ -2,19 +2,32 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../lib/axios";
 
 const initialState = {
+  userID: null,
   messeges: [],
-  users: [],
+  users: {},
   loading: false,
 };
 
 export const getUsers = createAsyncThunk("messege/users", async () => {
   try {
-    const res = await axiosInstance("/messeges/users");
+    const res = await axiosInstance.get("/messeges/users");
     return res.data;
   } catch (error) {
     console.log(error);
   }
 });
+
+export const getMessages = createAsyncThunk(
+  "messege/allmsgs",
+  async (userID) => {
+    try {
+      const res = await axiosInstance.get(`/messeges/allmsg/${userID}`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 const messegeSlice = createSlice({
   name: "messege",
@@ -32,6 +45,16 @@ const messegeSlice = createSlice({
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
       });
+    builder.addCase(getMessages.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getMessages.fulfilled, (state, action) => {
+      state.loading = false;
+      state.payload = action.payload;
+    });
+    builder.addCase(getMessages.rejected, (state, action) => {
+      state.loading = false;
+    });
   },
 });
 

@@ -126,7 +126,7 @@ const updateAcc = async (req, res) => {
       });
     }
 
-    if (value.fullname) updates.fullname = value.fullname;
+    if (value.username) updates.username = value.username;
     if (value.Bio) updates.Bio = value.Bio;
     if (value.profileImg) {
       const Image = await cloudinary.uploader.upload(value.profileImg);
