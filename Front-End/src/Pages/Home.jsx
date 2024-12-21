@@ -8,8 +8,9 @@ const Home = () => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.messegedata.users);
-  const messeges = useSelector((state) => state.messeges);
+  const messeges = useSelector((state) => state.messegedata.messeges);
 
+  // const state = useSelector((state) => state.messegedata);
   useEffect(() => {
     dispatch(getUsers());
   }, []);
@@ -18,24 +19,27 @@ const Home = () => {
     dispatch(getMessages(id));
   };
 
+  useEffect(() => {
+    // console.log(messeges);
+  }, [handleChat]);
+
   return (
-    <>
-      <section className="flex h-screen">
-        <div className="w-1/4 flex flex-col gap-3 p-4">
-          {users?.user?.map((data) => {
-            return (
-              <div key={data._id} onClick={() => handleChat(data._id)}>
-                {console.log(data._id)}
-                <UserChat data={data} />
-              </div>
-            );
-          })}
-        </div>
-        <div className="w-4/5 rounded-l-md border p-4">
-          <ChatComp />
-        </div>
-      </section>
-    </>
+    <section className="flex flex-grow h-[90%]">
+      <div className="w-1/4 flex flex-col gap-3 p-4 overflow-auto">
+        {users?.user?.map((data) => (
+          <div
+            key={data._id}
+            onClick={() => handleChat(data._id)}
+            className="p-2 cursor-pointer rounded-lg transition"
+          >
+            <UserChat data={data} />
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-col justify-end w-3/4 p-4 rounded-l-md bordershadow-lg">
+        <ChatComp />
+      </div>
+    </section>
   );
 };
 

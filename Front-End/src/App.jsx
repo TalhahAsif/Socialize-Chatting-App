@@ -36,7 +36,7 @@ const App = () => {
 
   return (
     <>
-      <Toaster richColors position="bottom-right" />
+      <Toaster richColors position="bottom-right"/>
       <Routes>
         <Route path="/" element={user ? <Layout /> : <Navigate to={"/auth"} />}>
           <Route index element={<Home />} />

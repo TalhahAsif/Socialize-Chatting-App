@@ -2,9 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../lib/axios";
 
 const initialState = {
-  userID: null,
-  messeges: [],
   users: {},
+  selectedUser: {},
+  messeges: {},
   loading: false,
 };
 
@@ -18,8 +18,9 @@ export const getUsers = createAsyncThunk("messege/users", async () => {
 });
 
 export const getMessages = createAsyncThunk(
-  "messege/allmsgs",
+  "messeges/allmsg",
   async (userID) => {
+    console.log(userID);
     try {
       const res = await axiosInstance.get(`/messeges/allmsg/${userID}`);
       return res.data;
@@ -45,16 +46,17 @@ const messegeSlice = createSlice({
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
       });
-    builder.addCase(getMessages.pending, (state, action) => {
-      state.loading = true;
-    });
-    builder.addCase(getMessages.fulfilled, (state, action) => {
-      state.loading = false;
-      state.payload = action.payload;
-    });
-    builder.addCase(getMessages.rejected, (state, action) => {
-      state.loading = false;
-    });
+    builder
+      .addCase(getMessages.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getMessages.fulfilled, (state, action) => {
+        state.loading = false;
+        state.messeges = action.payload;
+      })
+      .addCase(getMessages.rejected, (state, action) => {
+        state.loading = false;
+      });
   },
 });
 

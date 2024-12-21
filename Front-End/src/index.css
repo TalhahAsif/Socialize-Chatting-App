@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+* {
     font-family: "Poppins";
+}
+
+#root {
+    overflow: hidden;
 }

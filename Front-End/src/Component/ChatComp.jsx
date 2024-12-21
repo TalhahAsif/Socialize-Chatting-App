@@ -1,13 +1,21 @@
+import { Send } from "lucide-react";
 import React from "react";
 import { useSelector } from "react-redux";
+import cookieParser from "cookie-parser";
 
 const ChatComp = () => {
-
-//   console.log(messeges);
+  const messege = useSelector((state) => state.messegedata.messeges.chat);
+  const myID = 
+  console.log(messege);
 
   return (
-    <div>
-      <div className="border chat chat-start">
+    <div className="">
+      {/* Friend Messege*/}
+
+      {messege.map((data) => {
+
+      })}
+      <div className="chat chat-start">
         <div className="chat-image avatar">
           <div className="w-10 rounded-full">
             <img
@@ -23,7 +31,9 @@ const ChatComp = () => {
         <div className="chat-bubble">You were the Chosen One!</div>
         <div className="chat-footer opacity-50">Delivered</div>
       </div>
-      <div className="border border-red-600 chat chat-end">
+
+      {/* My Messege */}
+      <div className="chat chat-end">
         <div className="chat-image avatar">
           <div className="w-10 rounded-full">
             <img
@@ -38,6 +48,19 @@ const ChatComp = () => {
         </div>
         <div className="chat-bubble">I hate you!</div>
         <div className="chat-footer opacity-50">Seen at 12:46</div>
+      </div>
+
+      {/* TEXT INPUT */}
+
+      <div className="flex justify-between gap-2">
+        <input
+          type="text"
+          placeholder="Type here"
+          className="input input-bordered input-accent w-full"
+        />
+        <button className="bg-green-500 text-white p-3 rounded-full flex justify-center items-center">
+          <Send />
+        </button>
       </div>
     </div>
   );

@@ -35,24 +35,23 @@ export const userForSideBar = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const myID = req.user._id;
-    const usertoChat = req.params;
+    const usertoChat = new ObjectId(req.params.params);
 
-    console.log("this is myID", myID);
-    console.log("this is receiver ID", new ObjectId(usertoChat.params));
+    console.log("myID", myID);
+    console.log("usertoChat", usertoChat);
 
     const chat = await Message.find({
       $or: [
-        { sender_id: myID, receiver_id: new ObjectId(usertoChat.params) },
-        { sender_id: new ObjectId(usertoChat.params), receiver_id: myID },
+        { sender_id: myID, receiver_id: usertoChat },
+        { sender_id: usertoChat, receiver_id: myID },
       ],
     });
 
-    if (!chat) {
-      return res.status(404).json({
+    if (chat.length === 0) {
+      return res.status(200).json({
         message: "No Chats",
       });
     }
-
     res.status(200).json({
       chat,
       message: "Chat Found",
