@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios";
 
 const initialState = {
   users: {},
-  selectedUser: {},
+  selectedUser: null,
   messeges: {},
   loading: false,
 };
@@ -17,18 +17,15 @@ export const getUsers = createAsyncThunk("messege/users", async () => {
   }
 });
 
-export const getMessages = createAsyncThunk(
-  "messeges/allmsg",
-  async (userID) => {
-    console.log(userID);
-    try {
-      const res = await axiosInstance.get(`/messeges/allmsg/${userID}`);
-      return res.data;
-    } catch (error) {
-      console.log(error);
-    }
+export const getMessages = createAsyncThunk("messeges/allmsg", async (user) => {
+  try {
+    const res = await axiosInstance.get(`/messeges/allmsg/${user._id}`);
+    res.data.selectedUser = user;
+    return res.data;
+  } catch (error) {
+    console.log(error);
   }
-);
+});
 
 const messegeSlice = createSlice({
   name: "messege",
@@ -53,6 +50,7 @@ const messegeSlice = createSlice({
       .addCase(getMessages.fulfilled, (state, action) => {
         state.loading = false;
         state.messeges = action.payload;
+        state.selectedUser = action.payload.selectedUser;
       })
       .addCase(getMessages.rejected, (state, action) => {
         state.loading = false;

@@ -12,7 +12,7 @@ const Navbar = () => {
 
 
   return (
-    <div className="flex justify-between mx-7 my-3">
+    <div className="flex justify-between mx-7 my-2">
       <div className="flex items-center justify-center gap-2">
         <MessageCircleDashed size={38} color="#1e55ca" />
         <p className="text-md font-bold">Socialize</p>
