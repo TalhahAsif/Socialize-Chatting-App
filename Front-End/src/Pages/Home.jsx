@@ -9,9 +9,8 @@ const Home = () => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.messegedata.users);
-  const messeges = useSelector((state) => state.messegedata.messeges);
+  const selecteduser = useSelector((state) => state.messegedata.selectedUser);
 
-  // const state = useSelector((state) => state.messegedata);
   useEffect(() => {
     dispatch(getUsers());
   }, []);
@@ -26,16 +25,18 @@ const Home = () => {
 
   return (
     <section className="flex flex-grow h-[90%]">
-      <div className="w-1/4 flex flex-col overflow-auto no-scrollbar border-r border-gray-700">
+      <div
+        className={`w-1/4 flex flex-col overflow-auto no-scrollbar`}
+      >
         <div className="flex items-center mx-4 gap-3 my-2">
           <Contact />
-          <p>Context</p>
+          <p>Contacts</p>
         </div>
         {users?.user?.map((data) => (
           <div
             key={data._id}
             onClick={() => handleChat(data)}
-            className="p-2 cursor-pointer rounded-lg transition"
+            className="p-1 cursor-pointer rounded-lg transition"
           >
             <UserChat data={data} />
           </div>

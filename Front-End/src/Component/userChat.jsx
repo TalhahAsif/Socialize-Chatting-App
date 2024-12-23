@@ -1,14 +1,20 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 const UserChat = ({ data }) => {
+  const selecteduser = useSelector((state) => state.messegedata.selectedUser);
 
   return (
     <div className="">
-      <div className="m-auto md:flex md:items-center md:justify-center gap-2 p-4 rounded-lg md:bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-200">
+      <div
+        className={`m-auto md:flex md:items-center md:justify-center gap-2 p-4 rounded-lg ${
+          selecteduser?._id == data?._id ? "bg-gray-900" : "bg-gray-800"
+        } shadow-md hover:shadow-2xl transition-shadow duration-200`}
+      >
         <div className=" flex flex-col justify-center items-center gap-2">
           <img
-            className="rounded-full w-16 md:h-full lg:h-16 object-cover border-2 border-gray-600"
-            src={data.profileImg}
+            className={`rounded-full w-16 md:h-full lg:h-16 object-cover border-2 `}
+            src={data?.profileImg}
             alt="Profile"
           />
           <p className="font-semibold text-white md:hidden">{data.username}</p>

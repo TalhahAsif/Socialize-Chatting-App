@@ -11,8 +11,6 @@ const ChatComp = () => {
   const messege = useSelector((state) => state.messegedata?.messeges?.chat);
   const selectedUser = useSelector((state) => state.messegedata?.selectedUser);
 
-  console.log("selectedUser", selectedUser);
-
   if (selectedUser === null) {
     return (
       <div className="h-full flex flex-col justify-center items-center rounded-tl-lg bg-slate-800">
