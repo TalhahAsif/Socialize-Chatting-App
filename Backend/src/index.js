@@ -4,11 +4,11 @@ import authRoutes from "./routes/auth.route.js";
 import messegesRoutes from "./routes/messege.routes.js";
 import { connectDB } from "./lib/connecBD.js";
 import cookieParser from "cookie-parser";
-import cors from "cors"
+import cors from "cors";
 
 dotenv.config();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5050;
 const app = express();
 
 app.use(express.json());

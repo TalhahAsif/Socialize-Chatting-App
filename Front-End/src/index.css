@@ -7,7 +7,7 @@
 }
 
 #root {
-  overflow: hidden;
+  /* overflow: hidden;  */
 }
 
 .no-scrollbar::-webkit-scrollbar {

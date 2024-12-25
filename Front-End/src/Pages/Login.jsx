@@ -25,8 +25,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.authdata.loading);
 
-  console.log("loading", loading);
-
   const {
     register,
     handleSubmit,
@@ -37,7 +35,6 @@ const Login = () => {
   });
 
   const submitForm = (data) => {
-    console.log(data);
     dispatch(loginUser(data));
     dispatch(checkAuthFunc());
     reset();

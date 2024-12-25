@@ -6,6 +6,8 @@ const Messeges = () => {
   const selectedUser = useSelector((state) => state.messegedata?.selectedUser);
   const authUser = useSelector((state) => state.authdata.user);
 
+  console.log("messege", messege);
+
   return (
     <div className="flex flex-col gap-4 overflow-auto">
       {messege?.map((data) => (

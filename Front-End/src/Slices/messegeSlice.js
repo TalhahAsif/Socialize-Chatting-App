@@ -4,7 +4,7 @@ import { axiosInstance } from "../lib/axios";
 const initialState = {
   users: {},
   selectedUser: null,
-  messeges: {},
+  messeges: [],
   loading: false,
 };
 
@@ -26,6 +26,21 @@ export const getMessages = createAsyncThunk("messeges/allmsg", async (user) => {
     console.log(error);
   }
 });
+
+export const sendMessege = createAsyncThunk(
+  "messeges/sendMessage",
+  async ({ message, selectedUser }) => {
+    try {
+      const res = await axiosInstance.post(
+        `/messeges/sendMessage/${selectedUser._id}`,
+        message
+      );
+      return res.data.newMessage;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 const messegeSlice = createSlice({
   name: "messege",
@@ -53,6 +68,19 @@ const messegeSlice = createSlice({
         state.selectedUser = action.payload.selectedUser;
       })
       .addCase(getMessages.rejected, (state, action) => {
+        state.loading = false;
+      });
+    builder
+      .addCase(sendMessege.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(sendMessege.fulfilled, (state, action) => {
+        console.log("state.messeges", state.messeges);
+
+        state.messeges = action.payload;
+        state.loading = false;
+      })
+      .addCase(sendMessege.rejected, (state, action) => {
         state.loading = false;
       });
   },

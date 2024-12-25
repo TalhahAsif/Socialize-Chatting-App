@@ -6,7 +6,7 @@ const ChatHeader = () => {
 
   return (
     <>
-      <div className="w-full h-[10%] flex gap-5 items-center px-5 rounded-tl-lg py-7">
+      <div className="w-full flex gap-5 items-center px-5 py-3  rounded-tl-lg">
         <div className="w-9 ">
           <img className="rounded-full" src={selectedUser?.profileImg} />
         </div>
