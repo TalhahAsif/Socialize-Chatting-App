@@ -2,7 +2,13 @@ import { Image, Send } from "lucide-react";
 import React, { useState } from "react";
 import SendImgBTN from "./sendImgBTN";
 
-const MessegeInput = ({ handleFileChange, setText, handleForm }) => {
+const MessegeInput = ({
+  handleFileChange,
+  setText,
+  handleForm,
+  text,
+  image,
+}) => {
   return (
     <div className="flex flex-col px-3 pb-3 h-[10%] bg-transparent ">
       <form onSubmit={handleForm} className="flex items-center gap-2 ">
@@ -11,10 +17,16 @@ const MessegeInput = ({ handleFileChange, setText, handleForm }) => {
           placeholder="Type here"
           className="input input-bordered input-accent w-full flex-grow"
           onChange={(e) => setText(e.target.value)}
+          value={text}
         />
         <section className="flex items-center gap-1">
           <SendImgBTN onChange={handleFileChange} />
-          <button className="bg-green-500 text-white p-3 rounded-full flex justify-center items-center">
+          <button
+            disabled={!text && !image}
+            className={`text-white p-3 rounded-full flex justify-center items-center ${
+              !text && !image ? "bg-slate-500" : "bg-green-500"
+            }`}
+          >
             <Send />
           </button>
         </section>

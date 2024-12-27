@@ -11,7 +11,7 @@ import { sendMessege } from "../Slices/messegeSlice";
 const ChatComp = () => {
   const dispatch = useDispatch();
 
-  const messege = useSelector((state) => state.messegedata?.messeges?.chat);
+  const messege = useSelector((state) => state.messegedata?.messeges);
   const selectedUser = useSelector((state) => state.messegedata?.selectedUser);
 
   const [image, setImage] = useState();
@@ -34,6 +34,8 @@ const ChatComp = () => {
       text,
     };
     dispatch(sendMessege({ message, selectedUser }));
+    setText("");
+    setImage("");
   };
 
   if (selectedUser === null) {
@@ -76,6 +78,8 @@ const ChatComp = () => {
               handleFileChange={handleFileChange}
               setText={setText}
               handleForm={handleForm}
+              text={text}
+              image={image}
             />
           </div>
         </div>

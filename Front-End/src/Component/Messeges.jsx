@@ -2,11 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const Messeges = () => {
-  const messege = useSelector((state) => state.messegedata?.messeges?.chat);
+  const messege = useSelector((state) => state.messegedata?.messeges);
   const selectedUser = useSelector((state) => state.messegedata?.selectedUser);
   const authUser = useSelector((state) => state.authdata.user);
-
-  console.log("messege", messege);
 
   return (
     <div className="flex flex-col gap-4 overflow-auto">
@@ -32,7 +30,14 @@ const Messeges = () => {
           <div className="chat-header">
             <time className="text-xs opacity-50">12:45</time>
           </div>
-          <div className="chat-bubble text-sm">{data.text}</div>
+          <div
+            className={`chat-bubble text-sm ${
+              data.sender_id === authUser._id && "bg-blue-600 text-black"
+            }`}
+          >
+            <img src={data.image} alt="" className="w-24 rounded-lg" />
+            {data.text}
+          </div>
           <div className="chat-footer opacity-50 text-xs">Delivered</div>
         </div>
       ))}

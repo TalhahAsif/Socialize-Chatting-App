@@ -8,6 +8,7 @@ import { Contact } from "lucide-react";
 const Home = () => {
   const dispatch = useDispatch();
 
+  const messeges = useSelector((state) => state);
   const users = useSelector((state) => state.messegedata.users);
   const selecteduser = useSelector((state) => state.messegedata.selectedUser);
 
@@ -19,15 +20,9 @@ const Home = () => {
     dispatch(getMessages(id));
   };
 
-  useEffect(() => {
-    // console.log(messeges);
-  }, []);
-
   return (
     <section className="flex flex-grow h-[90%]">
-      <div
-        className={`w-1/4 flex flex-col overflow-auto no-scrollbar`}
-      >
+      <div className={`w-1/4 flex flex-col overflow-auto no-scrollbar`}>
         <div className="flex items-center mx-4 gap-3 my-2">
           <Contact />
           <p>Contacts</p>
@@ -35,7 +30,10 @@ const Home = () => {
         {users?.user?.map((data) => (
           <div
             key={data._id}
-            onClick={() => handleChat(data)}
+            onClick={() => {
+              // console.log("data", data);
+              handleChat(data);
+            }}
             className="p-1 cursor-pointer rounded-lg transition"
           >
             <UserChat data={data} />

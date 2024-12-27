@@ -35,7 +35,7 @@ export const sendMessege = createAsyncThunk(
         `/messeges/sendMessage/${selectedUser._id}`,
         message
       );
-      return res.data.newMessage;
+      return res.data;
     } catch (error) {
       console.log(error);
     }
@@ -63,8 +63,9 @@ const messegeSlice = createSlice({
         state.loading = true;
       })
       .addCase(getMessages.fulfilled, (state, action) => {
+        // console.log("action.payload", action.payload.chat);
         state.loading = false;
-        state.messeges = action.payload;
+        state.messeges = action.payload.chat;
         state.selectedUser = action.payload.selectedUser;
       })
       .addCase(getMessages.rejected, (state, action) => {
@@ -75,9 +76,7 @@ const messegeSlice = createSlice({
         state.loading = true;
       })
       .addCase(sendMessege.fulfilled, (state, action) => {
-        console.log("state.messeges", state.messeges);
-
-        state.messeges = action.payload;
+        state.messeges =[...state.messeges, action.payload.newMessage];
         state.loading = false;
       })
       .addCase(sendMessege.rejected, (state, action) => {
