@@ -4,6 +4,7 @@ import { getMessages, getUsers } from "../Slices/messegeSlice";
 import UserChat from "../Component/userChat";
 import ChatComp from "../Component/ChatComp";
 import { Contact } from "lucide-react";
+import CreateConverversationBtn from "../Component/CreateConverversationBtn";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const Home = () => {
   return (
     <section className="flex flex-grow h-[90%]">
       <div className={`w-1/4 flex flex-col overflow-auto no-scrollbar`}>
+        <CreateConverversationBtn />
         <div className="flex items-center mx-4 gap-3 my-2">
           <Contact />
           <p>Contacts</p>

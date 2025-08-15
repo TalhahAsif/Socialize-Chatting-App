@@ -23,19 +23,36 @@ export const createConversation = async (req, res) => {
 }
 
 export const findUsers = async (req, res) => {
-    const { userNameorEmail } = req.body
-    try {
-        const user = await User.find({ $or: [{ username: { $regex: userNameorEmail, $options: "i" } }, { email: { $regex: userNameorEmail, $options: "i" } }] });
+    const { userNameorEmail } = req.query
 
+    try {
+        const user = await User.find({
+            $and: [
+                {
+                    $or: [
+                        { username: { $regex: `^${userNameorEmail}$`, $options: "i" } },
+                        { email: { $regex: `^${userNameorEmail}$`, $options: "i" } }
+                    ]
+                },
+                { _id: { $ne: req.user._id } }
+            ]
+        });
+        
         if (user.length === 0) {
             return res.status(404).json({
                 message: "No User found with this username or email",
             })
         }
 
-        console.log(user, "searched User");
+        res.status(201).json({
+            message: "User found except me",
+            user
+        })
 
     } catch (error) {
-
+        console.log("error in findUsers", error.message);
+        res.status(500).json({
+            messege: "Internal Server Error",
+        });
     }
 }
