@@ -1,8 +1,6 @@
 import { MessageCircleDashed, Send } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import cookieParser from "cookie-parser";
-import Cookies from "js-cookie";
 import ChatHeader from "./chatHeader";
 import MessegeInput from "./MessegeInput";
 import Messeges from "./Messeges";
