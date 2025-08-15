@@ -161,6 +161,4 @@ const checkAuth = (req, res) => {
   }
 };
 
-const updatePassword = () => {};
-
 export { signup, login, logout, updateAcc, checkAuth };
