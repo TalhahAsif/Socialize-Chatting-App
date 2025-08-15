@@ -1,10 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth.route.js";
-import messegesRoutes from "./routes/messege.routes.js";
 import { connectDB } from "./lib/connecBD.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
+import authRoutes from "./routes/auth.route.js";
+import messegesRoutes from "./routes/messege.routes.js";
+import conversationRoutes from "./routes/conversation.routes.js";
 
 dotenv.config();
 
@@ -22,6 +24,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messeges", messegesRoutes);
+app.use("/api/conversation", conversationRoutes);
 
 app.listen(PORT, () => {
   connectDB();
