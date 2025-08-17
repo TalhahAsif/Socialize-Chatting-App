@@ -7,6 +7,7 @@ const initialState = {
     loading: false,
     searchedUser: [],
     searchLoading: false,
+    currentConversation: null,
     error: null,
 }
 export const findUser = createAsyncThunk("conversation/findUsers", async (data, { rejectWithValue }) => {
@@ -16,6 +17,18 @@ export const findUser = createAsyncThunk("conversation/findUsers", async (data, 
     } catch (error) {
         console.log(error);
         toast.error(error.response.data.message || "failed to find users");
+        return rejectWithValue(error.response?.data || { message: "Something went wrong" });
+    }
+})
+
+export const createConversation = createAsyncThunk("conversation/createConversation", async (data, { rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.post("conversation/createConversation", { memberId: data });
+        console.log(res, "res of create conversation");
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.message || "failed to create conversation");
         return rejectWithValue(error.response?.data || { message: "Something went wrong" });
     }
 })
@@ -39,6 +52,18 @@ const ConversationSlice = createSlice({
         })
         builder.addCase(findUser.rejected, (state, action) => {
             state.searchLoading = false;
+        })
+
+        builder.addCase(createConversation.pending, (state, action) => {
+            state.loading = true;
+        })
+        builder.addCase(createConversation.fulfilled, (state, action) => {
+            console.log(action.payload, "payload");
+            state.loading = false;
+            // state.conversations.push(action.payload.conversation);
+        })
+        builder.addCase(createConversation.rejected, (state, action) => {
+            state.loading = false;
         })
     }
 })

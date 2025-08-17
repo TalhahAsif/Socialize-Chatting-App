@@ -3,10 +3,11 @@ import User from "../models/user.model.js";
 
 export const createConversation = async (req, res) => {
     const userId = req.user._id
-    const { memeberId } = req.body
+    const { memberId } = req.body
+
     try {
         const newConversation = new Conversation({
-            members: [userId, memeberId],
+            members: [userId, memberId],
         })
         await newConversation.save();
 
@@ -16,6 +17,19 @@ export const createConversation = async (req, res) => {
         });
     } catch (error) {
         console.log("error in createConversation", error.message);
+        res.status(500).json({
+            messege: "Internal Server Error",
+        });
+    }
+}
+
+export const getConversation = async (req, res) => {
+    const userId = req.user._id
+    try {
+        const conversations = await Conversation.find({ members: { $all: [userId] } });
+
+    } catch (error) {
+        console.log("error in getConversation", error.message);
         res.status(500).json({
             messege: "Internal Server Error",
         });
@@ -37,7 +51,7 @@ export const findUsers = async (req, res) => {
                 { _id: { $ne: req.user._id } }
             ]
         });
-        
+
         if (user.length === 0) {
             return res.status(404).json({
                 message: "No User found with this username or email",

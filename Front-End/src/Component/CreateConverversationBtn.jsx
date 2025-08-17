@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { set } from "zod";
-import { findUser } from "../Slices/conversation.Slice";
+import { createConversation, findUser } from "../Slices/conversation.Slice";
 import { clearSearchedUser } from "../Slices/conversation.Slice";
 
 const CreateConverversationBtn = () => {
@@ -16,6 +16,10 @@ const CreateConverversationBtn = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(findUser(search));
+  };
+
+  const handlecreateConversation = (id) => {
+    dispatch(createConversation(id));
   };
 
   return (
@@ -58,7 +62,12 @@ const CreateConverversationBtn = () => {
                   Close
                 </div>
                 <button
-                  className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition flex justify-center item-center"
+                  disabled={searchLoading || search.length === 0}
+                  className={`px-4 py-2 bg-gray-800 text-white rounded-lg ${
+                    search.length > 0
+                      ? "hover:bg-gray-700"
+                      : " bg-gray-800 cursor-not-allowed"
+                  } transition flex justify-center item-center`}
                   type="submit"
                 >
                   {searchLoading ? (
@@ -72,7 +81,10 @@ const CreateConverversationBtn = () => {
             <section>
               {searchedUser &&
                 searchedUser.map((user) => (
-                  <section key={user._id} className="flex justify-between items-center mt-4 p-2 bg-gray-900 rounded-lg border border-gray-700 hover:bg-gray-800 cursor-pointer">
+                  <section
+                    key={user._id}
+                    className="flex justify-between items-center mt-4 p-2 bg-gray-900 rounded-lg border border-gray-700 hover:bg-gray-800 cursor-pointer"
+                  >
                     <div className="flex gap-4 items-center ">
                       <img
                         className="w-10 h-10 rounded-full object-cover"
@@ -86,7 +98,12 @@ const CreateConverversationBtn = () => {
                         </p>
                       </div>
                     </div>
-                    <button className="btn btn-primary btn-sm">Start Chat</button>
+                    <button
+                      onClick={() => handlecreateConversation(user._id)}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Start Chat
+                    </button>
                   </section>
                 ))}
             </section>
