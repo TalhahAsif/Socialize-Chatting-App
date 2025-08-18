@@ -40,7 +40,7 @@ export const getConversation = async (req, res) => {
         const conversations = await Conversation.find({
             members: { $all: [userId] }
         })
-            .populate("members", "username email profilePic") // select only the fields you need
+            .populate("members", "username email profileImg") // select only the fields you need
             .lean(); // convert to plain JS object (so we can filter easily)
 
         const formattedConversations = conversations.map(convo => {
