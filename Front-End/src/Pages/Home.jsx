@@ -5,16 +5,22 @@ import UserChat from "../Component/userChat";
 import ChatComp from "../Component/ChatComp";
 import { Contact } from "lucide-react";
 import CreateConverversationBtn from "../Component/CreateConverversationBtn";
+import { getConversations } from "../Slices/conversation.Slice";
 
 const Home = () => {
   const dispatch = useDispatch();
 
-  const messeges = useSelector((state) => state);
+  // const messeges = useSelector((state) => state.messegedata);
   const users = useSelector((state) => state.messegedata.users);
   const selecteduser = useSelector((state) => state.messegedata.selectedUser);
+  const conversations = useSelector(
+    (state) => state.conversationData.conversations
+  );
+
+  console.log(conversations, "conversations");
 
   useEffect(() => {
-    dispatch(getUsers());
+    dispatch(getConversations());
   }, []);
 
   const handleChat = (id) => {
@@ -29,7 +35,7 @@ const Home = () => {
           <Contact />
           <p>Contacts</p>
         </div>
-        {users?.user?.map((data) => (
+        {conversations?.map((data) => (
           <div
             key={data._id}
             onClick={() => {

@@ -6,6 +6,15 @@ export const createConversation = async (req, res) => {
     const { memberId } = req.body
 
     try {
+        const conversation = await Conversation.find({ members: { $all: [userId, memberId] } });
+
+        if (conversation.length > 0) {
+            return res.status(200).json({
+                conversationId: conversation,
+                message: "Conversation already exists",
+            });
+        }
+
         const newConversation = new Conversation({
             members: [userId, memberId],
         })
@@ -24,17 +33,37 @@ export const createConversation = async (req, res) => {
 }
 
 export const getConversation = async (req, res) => {
-    const userId = req.user._id
+    const userId = req.user._id;
+
     try {
-        const conversations = await Conversation.find({ members: { $all: [userId] } });
+        // Get conversations and populate all members
+        const conversations = await Conversation.find({
+            members: { $all: [userId] }
+        })
+            .populate("members", "username email profilePic") // select only the fields you need
+            .lean(); // convert to plain JS object (so we can filter easily)
+
+        const formattedConversations = conversations.map(convo => {
+            return {
+                ...convo,
+                members: convo.members.filter(
+                    member => member._id.toString() !== userId.toString()
+                )
+            };
+        });
+
+        res.status(200).json({
+            message: "Conversation found",
+            conversations: formattedConversations,
+        });
 
     } catch (error) {
         console.log("error in getConversation", error.message);
         res.status(500).json({
-            messege: "Internal Server Error",
+            message: "Internal Server Error",
         });
     }
-}
+};
 
 export const findUsers = async (req, res) => {
     const { userNameorEmail } = req.query
