@@ -10,9 +10,16 @@ const messegeSchema = new mongoose.Schema(
     text: {
       type: String,
     },
-    image: {
-      type: String,
-    },
+    images: [{
+      url: { type: String },
+      filename: { type: String },
+      public_id: { type: String }
+    }],
+    documents: [{
+      url: { type: String },
+      filename: { type: String },
+      public_id: { type: String } 
+    }]
   },
   { timestamps: true }
 );

@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 
 const Messeges = () => {
   const messege = useSelector((state) => state.messegedata?.messeges);
-  const selectedUser = useSelector((state) => state.messegedata?.selectedUser);
+  const currentConversation = useSelector(
+    (state) => state.messegedata.currentConversation
+  );
   const authUser = useSelector((state) => state.authdata.user);
 
   return (
@@ -12,7 +14,9 @@ const Messeges = () => {
         <div
           key={data._id}
           className={`chat ${
-            data.sender_id === authUser._id ? "chat-end" : "chat-start"
+            currentConversation?.members[0]?._id === authUser._id
+              ? "chat-end"
+              : "chat-start"
           }`}
         >
           <div className="chat-image avatar">
@@ -20,9 +24,9 @@ const Messeges = () => {
               <img
                 alt="Tailwind CSS chat bubble component"
                 src={
-                  data.sender_id === authUser._id
+                  currentConversation?.members[0]?._id === authUser._id
                     ? authUser.profileImg
-                    : selectedUser.profileImg
+                    : currentConversation?.members[0]?.profileImg
                 }
               />
             </div>
@@ -32,7 +36,8 @@ const Messeges = () => {
           </div>
           <div
             className={`chat-bubble text-sm ${
-              data.sender_id === authUser._id && "bg-blue-600 text-black"
+              currentConversation?.members[0]?._id === authUser._id &&
+              "bg-blue-600 text-black"
             }`}
           >
             <img src={data.image} alt="" className="w-24 rounded-lg" />

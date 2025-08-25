@@ -70,7 +70,6 @@ const ConversationSlice = createSlice({
                 state.loading = true;
             })
             .addCase(createConversation.fulfilled, (state, action) => {
-                console.log(action.payload, "payload");
                 state.loading = false;
             })
             .addCase(createConversation.rejected, (state, action) => {
@@ -82,7 +81,6 @@ const ConversationSlice = createSlice({
                 state.gettingConversationLoading = true
             })
             .addCase(getConversations.fulfilled, (state, action) => {
-                console.log(action.payload, "action.payload")
                 state.gettingConversationLoading = false
                 state.conversations = action.payload.conversations
             })
