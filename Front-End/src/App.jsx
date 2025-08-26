@@ -14,6 +14,7 @@ import axios from "axios";
 import { axiosInstance } from "./lib/axios.js";
 import { checkAuthFunc } from "./Slices/usersSlice.js";
 import { Toaster, toast } from "sonner";
+import { io } from "socket.io-client";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,22 @@ const App = () => {
   const user = useSelector((state) => state.authdata.user);
   const checkingAuth = useSelector((state) => state.authdata.checkingAuth);
   const loading = useSelector((state) => state.authdata.loading);
+
+  const socket = io("http://localhost:8080");
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to backend");
+    });
+
+    socket.on("receiveMessage", (data) => {
+      setReceivedMessages((prevMessages) => [...prevMessages, data]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(checkAuthFunc());
@@ -36,7 +53,7 @@ const App = () => {
 
   return (
     <>
-      <Toaster richColors position="bottom-right"/>
+      <Toaster richColors position="bottom-right" />
       <Routes>
         <Route path="/" element={user ? <Layout /> : <Navigate to={"/auth"} />}>
           <Route index element={<Home />} />

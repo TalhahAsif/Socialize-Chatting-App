@@ -3,10 +3,11 @@ import { axiosInstance } from "../lib/axios";
 
 const initialState = {
   users: {},
-  selectedUser: null,
+  currentConversation: null,
   messeges: [],
   loading: false,
 };
+
 
 export const getUsers = createAsyncThunk("messege/users", async () => {
   try {
@@ -17,10 +18,11 @@ export const getUsers = createAsyncThunk("messege/users", async () => {
   }
 });
 
-export const getMessages = createAsyncThunk("messeges/allmsg", async (user) => {
+export const getMessages = createAsyncThunk("messeges/getMessage", async (conversation) => {
+  console.log(conversation, "conversation")
   try {
-    const res = await axiosInstance.get(`/messeges/allmsg/${user._id}`);
-    res.data.selectedUser = user;
+    const res = await axiosInstance.get(`/messeges/getMessage/${conversation._id}`);
+    res.data.currentConversation = conversation;
     return res.data;
   } catch (error) {
     console.log(error);
@@ -29,11 +31,12 @@ export const getMessages = createAsyncThunk("messeges/allmsg", async (user) => {
 
 export const sendMessege = createAsyncThunk(
   "messeges/sendMessage",
-  async ({ message, selectedUser }) => {
+  async ({formData, currentConversation}) => {
     try {
       const res = await axiosInstance.post(
-        `/messeges/sendMessage/${selectedUser._id}`,
-        message
+        `/messeges/sendMessage/${currentConversation._id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       return res.data;
     } catch (error) {
@@ -63,10 +66,10 @@ const messegeSlice = createSlice({
         state.loading = true;
       })
       .addCase(getMessages.fulfilled, (state, action) => {
-        // console.log("action.payload", action.payload.chat);
+        console.log("action.payload", action.payload)
         state.loading = false;
         state.messeges = action.payload.chat;
-        state.selectedUser = action.payload.selectedUser;
+        state.currentConversation = action.payload.currentConversation;
       })
       .addCase(getMessages.rejected, (state, action) => {
         state.loading = false;

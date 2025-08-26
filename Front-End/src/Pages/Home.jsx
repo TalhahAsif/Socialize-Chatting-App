@@ -17,14 +17,12 @@ const Home = () => {
     (state) => state.conversationData.conversations
   );
 
-  console.log(conversations, "conversations");
-
   useEffect(() => {
     dispatch(getConversations());
   }, []);
 
-  const handleChat = (id) => {
-    dispatch(getMessages(id));
+  const handleChat = (conversation) => {
+    dispatch(getMessages(conversation));
   };
 
   return (

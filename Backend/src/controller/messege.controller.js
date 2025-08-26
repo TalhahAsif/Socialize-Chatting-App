@@ -1,51 +1,16 @@
 import mongoose from "mongoose";
-import cloudinary from "../lib/cloudnary.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 import { ObjectId } from "mongodb";
-
-export const userForSideBar = async (req, res) => {
-  try {
-    const currentUserID = req.user._id;
-
-    const Users = await User.find({ _id: { $ne: currentUserID } }).select(
-      "-password"
-    );
-
-    console.log(Users);
-
-    if (Users.length == 0) {
-      res.status(404).json({
-        message: "User not Found",
-      });
-    } else {
-      res.status(200).json({
-        user: Users,
-        message: "User found",
-      });
-    }
-  } catch (error) {
-    console.log("error in userForSideBar", error.message);
-    res.status(200).json({
-      message: "Internal Server Error",
-    });
-  }
-};
+import { uploadToCloudinary } from "../lib/cloudnary.js";
 
 export const getMessages = async (req, res) => {
+  const conversationId = req.params.conversationId;
+
   try {
-    const myID = req.user._id;
-    const usertoChat = new ObjectId(req.params.params);
-
-    console.log("myID", myID);
-    console.log("usertoChat", usertoChat);
-
     const chat = await Message.find({
-      $or: [
-        { sender_id: myID, receiver_id: usertoChat },
-        { sender_id: usertoChat, receiver_id: myID },
-      ],
-    });
+      conversation_id: conversationId
+    }).populate("conversation_id", "members")
 
     if (chat.length === 0) {
       return res.status(200).json({
@@ -57,7 +22,7 @@ export const getMessages = async (req, res) => {
       message: "Chat Found",
     });
   } catch (error) {
-    console.log("Error in getMessage", error.message);
+    console.log("Error in getMessage ==>", error.message);
     res.status(500).json({
       messege: "Internal Server Error",
     });
@@ -69,28 +34,40 @@ const isValidObjectId = (id) => {
 };
 
 export const sendChat = async (req, res) => {
-  const { text, image } = req.body;
-  const { id: receiver_id } = req.params;
-  const sender_id = req.user._id;
-
-  if (!isValidObjectId(receiver_id) || !isValidObjectId(sender_id)) {
-    res.status(500).json({
-      messege: "Not a valid Object ID",
-    });
-  }
+  const { text } = req.body;
+  const { conversationId } = req.params;
+  const images = req.files.images;
+  const documents = req.documents;
+  const userId = req.user._id;
 
   try {
-    let chat = { receiver_id, sender_id };
 
-    if (text) {
-      chat.text = text;
-    }
-    if (image) {
-      const uploadImg = await cloudinary.uploader.upload(image);
-      chat.image = uploadImg.secure_url;
+    const uploadedImages = [];
+    const uploadedDocuments = [];
+
+    if (images && images.length > 0) {
+      for (let img of images) {
+        console.log(img, "images in loop");
+        const result = await uploadToCloudinary(img);
+        uploadedImages.push(result);
+      }
     }
 
-    const newMessage = new Message(chat);
+    if (documents && documents.length > 0) {
+      for (let doc of documents) {
+        const result = await uploadToCloudinary(doc.buffer);
+        console.log("Cloudinary Document Upload Result:", result);
+        uploadedDocuments.push(result);
+      }
+    }
+
+    const newMessage = new Message({
+      text,
+      images: uploadedImages,
+      documents: uploadedDocuments,
+      conversation_id: conversationId,
+      createdBy: userId,
+    });
 
     res.status(200).json({
       newMessage,
@@ -99,7 +76,7 @@ export const sendChat = async (req, res) => {
     await newMessage.save();
   } catch (error) {
     console.log("Error in sendChat", error.message);
-    res.status(200).json({
+    res.status(500).json({
       message: "Internal Server Error",
     });
   }
