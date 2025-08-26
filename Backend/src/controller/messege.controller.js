@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import cloudinary from "../lib/cloudnary.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 import { ObjectId } from "mongodb";
+import { uploadToCloudinary } from "../lib/cloudnary.js";
 
 export const getMessages = async (req, res) => {
   const conversationId = req.params.conversationId;
@@ -36,15 +36,37 @@ const isValidObjectId = (id) => {
 export const sendChat = async (req, res) => {
   const { text } = req.body;
   const { conversationId } = req.params;
-  const images = req.images;
+  const images = req.files.images;
   const documents = req.documents;
+  const userId = req.user._id;
 
   try {
+
+    const uploadedImages = [];
+    const uploadedDocuments = [];
+
+    if (images && images.length > 0) {
+      for (let img of images) {
+        console.log(img, "images in loop");
+        const result = await uploadToCloudinary(img);
+        uploadedImages.push(result);
+      }
+    }
+
+    if (documents && documents.length > 0) {
+      for (let doc of documents) {
+        const result = await uploadToCloudinary(doc.buffer);
+        console.log("Cloudinary Document Upload Result:", result);
+        uploadedDocuments.push(result);
+      }
+    }
+
     const newMessage = new Message({
       text,
-      images,
-      documents,
+      images: uploadedImages,
+      documents: uploadedDocuments,
       conversation_id: conversationId,
+      createdBy: userId,
     });
 
     res.status(200).json({
@@ -54,7 +76,7 @@ export const sendChat = async (req, res) => {
     await newMessage.save();
   } catch (error) {
     console.log("Error in sendChat", error.message);
-    res.status(200).json({
+    res.status(500).json({
       message: "Internal Server Error",
     });
   }

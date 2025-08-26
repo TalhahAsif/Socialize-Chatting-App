@@ -59,19 +59,21 @@ const ChatComp = () => {
       formData.append("text", text);
     }
     if (image.length > 0) {
-      formData.append("image", image);
-    }
-    if (documents.length > 0) {
-      formData.append("documents", documents);
+      image.forEach((file) => {
+        formData.append("images", file);
+      });
     }
 
-    // for (const entry of formData.entries()) {
-    //   console.log(entry[0], entry[1], "data");
-    // }
+    if (documents.length > 0) {
+      documents.forEach((file) => {
+        formData.append("documents", file);
+      });
+    }
 
     dispatch(sendMessege({ formData, currentConversation }));
     setText("");
-    setImage("");
+    setImage([]);
+    setImagePreview([]);
   };
 
   if (currentConversation === null) {

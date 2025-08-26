@@ -31,14 +31,12 @@ export const getMessages = createAsyncThunk("messeges/getMessage", async (conver
 
 export const sendMessege = createAsyncThunk(
   "messeges/sendMessage",
-  async ({ message, currentConversation }) => {
-    console.log(message, "message")
-    console.log(currentConversation, "currentConversation")
-    return
+  async ({formData, currentConversation}) => {
     try {
       const res = await axiosInstance.post(
-        `/messeges/sendMessage/${selectedUser._id}`,
-        message
+        `/messeges/sendMessage/${currentConversation._id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       return res.data;
     } catch (error) {

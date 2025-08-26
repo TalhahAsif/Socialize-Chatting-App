@@ -2,7 +2,7 @@ import Joi from "joi";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import cloudinary from "../lib/cloudnary.js";
+import {uploadToCloudinary} from "../lib/cloudnary.js";
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
