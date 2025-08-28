@@ -7,14 +7,14 @@ import http from "http";
 import authRoutes from "./routes/auth.route.js";
 import messegesRoutes from "./routes/messege.routes.js";
 import conversationRoutes from "./routes/conversation.routes.js";
-import { Server } from "socket.io";
+import { setupSocket } from "./lib/connect-socket.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
 const app = express();
 export const server = http.createServer(app)
-  
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -27,6 +27,8 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/messeges", messegesRoutes);
 app.use("/api/conversation", conversationRoutes);
+
+setupSocket(server);
 
 server.listen(PORT, () => {
   connectDB();

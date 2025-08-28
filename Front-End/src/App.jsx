@@ -23,15 +23,16 @@ const App = () => {
   const checkingAuth = useSelector((state) => state.authdata.checkingAuth);
   const loading = useSelector((state) => state.authdata.loading);
 
-  const socket = io("http://localhost:8080");
+  const socket = io("http://localhost:8080/");
 
   useEffect(() => {
     socket.on("connect", () => {
-      console.log("Connected to backend");
+      console.log("Socket connected to backend");
     });
 
-    socket.on("receiveMessage", (data) => {
-      setReceivedMessages((prevMessages) => [...prevMessages, data]);
+    socket.on("receiveMessage", (msg) => {
+      console.log("Message received from backend:", msg);
+      // setReceivedMessages((prevMessages) => [...prevMessages, data]);
     });
 
     return () => {

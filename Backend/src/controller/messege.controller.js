@@ -3,6 +3,7 @@ import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 import { ObjectId } from "mongodb";
 import { uploadToCloudinary } from "../lib/cloudnary.js";
+import { getIO } from "../lib/connect-socket.js";
 
 export const getMessages = async (req, res) => {
   const conversationId = req.params.conversationId;
@@ -36,18 +37,16 @@ const isValidObjectId = (id) => {
 export const sendChat = async (req, res) => {
   const { text } = req.body;
   const { conversationId } = req.params;
-  const images = req.files.images;
-  const documents = req.documents;
+  const images = req.files?.images;
+  const documents = req.files?.documents;
   const userId = req.user._id;
 
   try {
-
     const uploadedImages = [];
     const uploadedDocuments = [];
 
     if (images && images.length > 0) {
       for (let img of images) {
-        console.log(img, "images in loop");
         const result = await uploadToCloudinary(img);
         uploadedImages.push(result);
       }
@@ -56,7 +55,6 @@ export const sendChat = async (req, res) => {
     if (documents && documents.length > 0) {
       for (let doc of documents) {
         const result = await uploadToCloudinary(doc.buffer);
-        console.log("Cloudinary Document Upload Result:", result);
         uploadedDocuments.push(result);
       }
     }
@@ -69,15 +67,18 @@ export const sendChat = async (req, res) => {
       createdBy: userId,
     });
 
+    await newMessage.save();
+
+    // 🔥 Emit the message to all connected clients
+    const io = getIO();
+    io.to(conversationId).emit("receiveMessage", newMessage);
+
     res.status(200).json({
       newMessage,
-      message: "Message send",
+      message: "Message sent",
     });
-    await newMessage.save();
   } catch (error) {
-    console.log("Error in sendChat", error.message);
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
+    console.error("Error in sendChat:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
