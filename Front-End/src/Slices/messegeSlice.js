@@ -31,7 +31,7 @@ export const getMessages = createAsyncThunk("messeges/getMessage", async (conver
 
 export const sendMessege = createAsyncThunk(
   "messeges/sendMessage",
-  async ({formData, currentConversation}) => {
+  async ({ formData, currentConversation }) => {
     try {
       const res = await axiosInstance.post(
         `/messeges/sendMessage/${currentConversation._id}`,
@@ -48,7 +48,11 @@ export const sendMessege = createAsyncThunk(
 const messegeSlice = createSlice({
   name: "messege",
   initialState,
-  reducers: {},
+  reducers: {
+    addSocketMessage: (state, action) => {
+      state.messeges.push(action.payload);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUsers.pending, (state, action) => {
@@ -88,4 +92,5 @@ const messegeSlice = createSlice({
   },
 });
 
+export const { addSocketMessage } = messegeSlice.actions;
 export default messegeSlice.reducer;

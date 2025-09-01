@@ -69,9 +69,8 @@ export const sendChat = async (req, res) => {
 
     await newMessage.save();
 
-    // 🔥 Emit the message to all connected clients
     const io = getIO();
-    io.to(conversationId).emit("receiveMessage", newMessage);
+    io.emit("receiveMessage", newMessage);
 
     res.status(200).json({
       newMessage,

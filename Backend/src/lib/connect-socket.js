@@ -24,6 +24,16 @@ export function setupSocket(server) {
     });
   });
 
+  socket.on("joinConversation", (conversationId) => {
+    socket.join(conversationId); // user joins the conversation room
+    console.log(`Socket ${socket.id} joined room ${conversationId}`);
+  });
+
+  socket.on("leaveConversation", (conversationId) => {
+    socket.leave(conversationId);
+    console.log(`Socket ${socket.id} left room ${conversationId}`);
+  });
+
   return io;
 }
 

@@ -15,6 +15,8 @@ import { axiosInstance } from "./lib/axios.js";
 import { checkAuthFunc } from "./Slices/usersSlice.js";
 import { Toaster, toast } from "sonner";
 import { io } from "socket.io-client";
+import { addSocketMessage } from "./Slices/messegeSlice.js";
+import { setSocket } from "./Slices/socket.Slice.js";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,6 +24,10 @@ const App = () => {
   const user = useSelector((state) => state.authdata.user);
   const checkingAuth = useSelector((state) => state.authdata.checkingAuth);
   const loading = useSelector((state) => state.authdata.loading);
+  const { messeges } = useSelector((state) => state.messegedata);
+  const socketData = useSelector((state) => state.socketData);
+
+  console.log(socketData, "socketData");
 
   const socket = io("http://localhost:8080/");
 
@@ -30,9 +36,11 @@ const App = () => {
       console.log("Socket connected to backend");
     });
 
+    dispatch(setSocket(socket));
+
     socket.on("receiveMessage", (msg) => {
       console.log("Message received from backend:", msg);
-      // setReceivedMessages((prevMessages) => [...prevMessages, data]);
+      dispatch(addSocketMessage(msg));
     });
 
     return () => {
