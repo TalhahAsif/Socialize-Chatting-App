@@ -16,6 +16,7 @@ const Home = () => {
   const conversations = useSelector(
     (state) => state.conversationData.conversations
   );
+  const socket = useSelector((state) => state.socketData.socket);
 
   useEffect(() => {
     dispatch(getConversations());
@@ -23,6 +24,8 @@ const Home = () => {
 
   const handleChat = (conversation) => {
     dispatch(getMessages(conversation));
+
+    socket.emit("joinConversation", conversation._id);
   };
 
   return (

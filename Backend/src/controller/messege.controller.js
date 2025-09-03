@@ -70,7 +70,7 @@ export const sendChat = async (req, res) => {
     await newMessage.save();
 
     const io = getIO();
-    io.emit("receiveMessage", newMessage);
+    io.to(conversationId).emit("receiveMessage", newMessage);
 
     res.status(200).json({
       newMessage,

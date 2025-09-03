@@ -25,9 +25,6 @@ const App = () => {
   const checkingAuth = useSelector((state) => state.authdata.checkingAuth);
   const loading = useSelector((state) => state.authdata.loading);
   const { messeges } = useSelector((state) => state.messegedata);
-  const socketData = useSelector((state) => state.socketData);
-
-  console.log(socketData, "socketData");
 
   const socket = io("http://localhost:8080/");
 

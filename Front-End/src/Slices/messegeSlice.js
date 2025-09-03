@@ -38,6 +38,7 @@ export const sendMessege = createAsyncThunk(
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
+
       return res.data;
     } catch (error) {
       console.log(error);
